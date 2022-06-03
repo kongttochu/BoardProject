@@ -8,7 +8,7 @@ namespace BoardProject.Models
 {
     public class dbconn
     {
-        public SqlDataReader ConnectDB(string pSQLQuery, string dbName = "FILETEST")
+        public SqlDataReader ConnectDB(string pSQLQuery, string dbName = "BOARDTEST")
         {
             //접속을 위한 마스터 변수 생성
             SqlConnection conn = new SqlConnection();
