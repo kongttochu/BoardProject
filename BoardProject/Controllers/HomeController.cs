@@ -10,6 +10,12 @@ namespace BoardProject.Controllers
     {
         public ActionResult Index()
         {
+            //boardinfo boardinfo = new boardinfo();
+            //boardinfo.TITLE;
+            //boardinfo.WRITE_USERNM;
+            //boardinfo.WRITE_USERNM;
+
+
             return View();
         }
 
