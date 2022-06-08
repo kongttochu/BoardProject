@@ -125,6 +125,7 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
+    <Compile Include="Models\DataFromDB.cs" />
     <Compile Include="Models\dbconn.cs" />
     <Compile Include="Models\MainClass.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -166,6 +167,8 @@
     <Content Include="Views\Home\Contact.cshtml" />
     <Content Include="Views\Home\Index.cshtml" />
     <Content Include="Views\Board\BoardView.cshtml" />
+    <Content Include="Views\Board\CreateView.cshtml" />
+    <Content Include="Views\Board\ReadView.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

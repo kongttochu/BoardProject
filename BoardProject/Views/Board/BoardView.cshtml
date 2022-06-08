@@ -44,7 +44,30 @@
                 1 등록 입력창 : 제목과 본문 내용 비어있는 입력창 표시
                 2 저장 버튼 누르면 등록 후 창 닫기, 취소 버튼 누르면 창 닫기
 *@
+<style>
+    /*상단*/
+    /*드롭다운*/
+    .dropdown {
+        position: relative;
+        display: inline-block;
+    }
 
+    .dropdown-content {
+        display: none;
+        position: absolute;
+        z-index: 1; /*다른 요소들보다 앞에 배치*/
+    }
+
+    .dropdown-content div {
+            display: block;
+     }
+
+    .dropdown:hover .dropdown-content {
+        display: block;
+    }
+    /*중앙*/
+    /*하단*/
+</style>
 
 
 <script>
@@ -53,40 +76,182 @@
     });
 
     var init = function () {
-        $('#testBtn').click(function () {
-            $('#exampleModal').modal('show');
-        });
+        //$("pre").on("click", function () {
+        //    o.toast.info("소스 코드를 클릭하셨군요!");
+        //});
+        //
+        //검색 버튼
+        //등록 버튼
+
+        board.getlist(1);
     }
+
+
+    var title = "";
+    var total = 200;
+    var nowpage = 1;
+    var setpage = 10;
+    var pagesize = 10;
+
+    //클래스 object = JavaScript Object Nation
+    //list 
+    //View -> <div></div> 다른 페이지 이동
+    //CREATE -> 페이지 따로 생성
+    //DELETE -> ISUSE -> N
+    //EDIT 마지막
+
+
+    //다음 시간 과제
+    //페이징  
+    //  [ << ] 제일 처음
+    //  [ < ] 10개 전
+    //  [ 이전페이지 ] -1
+    //  [ 다음페이지 ] + 1
+    //  [ > ] 10개 이후
+    //  [ >> ] 제일 마지막
+
+    //검색
+
+
+    //다다음 시간 과제
+    //검색
+    //오더
+
+    function getlist() {
+
+    }
+
+    function setlist() {
+
+    }
+
+    var board = {
+        title: "제목",
+        total: 200,
+        nowpage: 1,
+        setpage: 10,
+        pagesize: 10,
+        searchvalue: "",
+        searchcolum: "",
+        init: function () {
+            this.nowpage = 1
+
+            this.getlist(1);
+        },
+        getlist: function (page) {
+            var params = {
+                offset: 0,
+                next: 2,
+                searchvalue: this.searchvalue,
+                searchcolum: this.searchcolum
+            }
+
+            //jquer function 호출 했을경우에 this는 바뀐다.
+            //var lll = [1, 2, 3, 4];
+            //$.each(lll, function (index, item) {
+            //    debugger;
+            //});
+
+            var that = this;
+
+            // ajax 통신
+            // ajax 를 실행하고 나서 동기화를 하지않으면, 쓰레드가 분기된다.
+            $.ajax({
+                type: "POST",            // HTTP method type(GET, POST) 형식이다.
+                url: "/Board/GetList",      // 컨트롤러에서 대기중인 URL 주소이다.
+                data: params,            // Json 형식의 데이터이다.
+                success: function (res) { // 비동기통신의 성공일경우 success콜백으로 들어옵니다. 'res'는 응답받은 데이터이다.
+                    // 응답코드 > 0000
+                    console.log("success");
+                    var list = JSON.parse(res);
+                    console.log(res);
+                    console.log("bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb");
+
+
+                    //this가 에러가 남
+                    //this.setlist(res);
+
+                    //1개만 실행시킬경우
+                    board.setlist(res);
+                    //2개 이상실행시킬경우
+                    //that.setlist(res);
+                    //that.setpage(res);
+                    //that.nowpage = page;
+                },
+                error: function (XMLHttpRequest, textStatus, errorThrown) { // 비동기 통신이 실패할경우 error 콜백으로 들어옵니다.
+                    alert("통신 실패.")
+                }
+            });
+
+
+            console.log("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa");
+        },
+        setlist: function (obj) {
+            $("#board tbody").html("");
+            $.each(obj, function (idx, item) {
+                //string format 형식으로 바꾸기, 자주 사용하는 기능들 미리 만들어 두고 불러서 쓰기(common script  comm.js)
+                $("#board tbody").append('<tr onclick=""><td>_</td><td>' + item["TITLE"] + '</td><td>' + item["REGDATE"] + '</td><td>수정, 삭제</td></tr>');
+            });
+
+            //콤마제거
+            //콤마추가
+            //숫자변환 -> 숫자인지 체크하는것도 포함 , 숫자인경우 숫자 parseint , 문자인경우 0 , null 0, NaN 0 
+            //
+           
+
+            //function stringformat()
+            //comm.stringformat
+        },
+        search: function () {
+            this.searchvalue = $("#input[name=search]").val();
+            this.searchcolum = $("#input[name=searchcolum]").val();
+            this.init();
+        }
+        //prepage: function () {
+        //    //다음에
+        //    return (pagesize - nowpage)
+        //},
+        //nextpage: function () {
+        //    let nextpage = (pagesize - nowpage) + 1
+        //    getlist(nextpage);
+        //}
+    };
+
 </script>
 
-<!--등록 모달-->
-<!--수정 모달-->
-<!--본문 확인 모달-->
-<!--삭제 모달-->
 <!--전체 콘텐츠-->
 <div>
     <!--상단 콘텐츠-->
     <div>
         <!--게시물 갯수 표시-->
-        <div>
+        <div id="board_count">
             총 <span>10</span>건의 게시물
         </div>
         <!--게시물 검색-->
         <div>
             <!--드롭다운-->
-            <!--검색 입력창 + 버튼-->
+            <div class="dropdown">
+                <span class="dropbtn">검색 기준</span>
+                <div class="dropdown-content">
+                    <div>제목</div>
+                    <div>본문</div>
+                </div>
+            </div>
+            <!--입력창-->
+            <!--버튼-->
         </div>
     </div>
     <!--중앙 콘텐츠-->
     <div>
         <!--게시물 테이블-->
         <div>
-            <table>
+            <table id="board">
                 <thead>
                     <tr>
                         <th>번호</th>
                         <th>제목</th>
                         <th>작성일</th>
+                        <th>.</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -94,20 +259,12 @@
                         <th>1</th>
                         <td>Mark</td>
                         <td>Otto</td>
-                    </tr>
-                    <tr>
-                        <th>1</th>
-                        <td>Mark</td>
                         <td>Otto</td>
                     </tr>
                     <tr>
                         <th>1</th>
                         <td>Mark</td>
                         <td>Otto</td>
-                    </tr>
-                    <tr>
-                        <th>1</th>
-                        <td>Mark</td>
                         <td>Otto</td>
                     </tr>
                 </tbody>
@@ -117,6 +274,10 @@
     <!--하단 콘텐츠-->
     <div>
         <!--페이지 버튼-->
+        <div>
+            <div></div>
+        </div>
         <!--등록 버튼-->
+
     </div>
 </div>
