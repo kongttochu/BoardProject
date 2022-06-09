@@ -49,10 +49,14 @@
 
 <style>
     /*전체*/
-    .div-samerow, #page-btn-group div {
+    .div-samerow, #page-btn-group div, #page-btn-numbers div{
         display: inline-block;
     }
     /*상단*/
+    /*갯수표시*/
+    #board_count span {
+        color: red;
+    }
     /*드롭다운*/
     .dropdown {
         position: relative;
@@ -130,7 +134,7 @@
         //$('head').append('<script language="javascript" type="text/javascript" src="custom/js/common.js" />');
         
         setDivBtnLink("#create-btn", "/Board/CreateView")//등록버튼
-        board.getlist(1);
+        board.init();
     }
 
     let clickCURD = function ($this, curd) {
@@ -167,9 +171,39 @@
         searchvalue: "",
         searchcolum: "",
         init: function () {
-            this.nowpage = 1
+            this.nowpage = 1;
+            this.setPage();
+        },
+        setPage: function () {
+            this.getCount();
+            this.getlist(this.nowpage);
+        },
+        getCount: function () {
 
-            this.getlist(1);
+            var that = this;
+
+            // ajax 통신
+            // ajax 를 실행하고 나서 동기화를 하지않으면, 쓰레드가 분기된다.
+            $.ajax({
+                type: "POST",            // HTTP method type(GET, POST) 형식이다.
+                url: "/Board/GetCount",      // 컨트롤러에서 대기중인 URL 주소이다.
+                data: {},            // Json 형식의 데이터이다.
+                success: function (res) { // 비동기통신의 성공일경우 success콜백으로 들어옵니다. 'res'는 응답받은 데이터이다.
+                    // 응답코드 > 0000
+                    console.log("count success");
+                    var json = JSON.parse(res);
+                    console.log(json);
+
+                    that.setCount(json);
+                },
+                error: function (XMLHttpRequest, textStatus, errorThrown) { // 비동기 통신이 실패할경우 error 콜백으로 들어옵니다.
+                    alert("통신 실패.");
+                }
+            });
+        },
+        setCount: function (json) {
+            let count = json.count;
+            $("#board_count span").val(count);
         },
         getlist: function (page) {
             var params = {
@@ -198,14 +232,14 @@
                     //this.setlist(res);
 
                     //1개만 실행시킬경우
-                    board.setlist(list);
+                    //board.setlist(list);
                     //2개 이상실행시킬경우
-                    //that.setlist(res);
+                    that.setlist(list);
                     //that.setpage(res);
-                    //that.nowpage = page;
+                    that.nowpage = page;
                 },
                 error: function (XMLHttpRequest, textStatus, errorThrown) { // 비동기 통신이 실패할경우 error 콜백으로 들어옵니다.
-                    alert("통신 실패.")
+                    alert("통신 실패.");
                 }
             });
         },
@@ -215,14 +249,8 @@
                 //string format 형식으로 바꾸기, 자주 사용하는 기능들 미리 만들어 두고 불러서 쓰기(common script  comm.js)
                 $("#board tbody").append('<tr><td>_</td><td onclick="clickCURD(this, \'r\')" board_id ="' + item["IDX"] + '">' + item["TITLE"] + '</td><td>' + item["REGDATE"] + '</td></tr>');
             });
-            //콤마제거
-            //콤마추가
-            //숫자변환 -> 숫자인지 체크하는것도 포함 , 숫자인경우 숫자 parseint , 문자인경우 0 , null 0, NaN 0
-            //
 
 
-            //function stringformat()
-            //comm.stringformat
         },
         search: function () {
             this.searchvalue = $("#input[name=search]").val();
@@ -288,11 +316,6 @@
                         <td>Mark</td>
                         <td>Otto</td>
                     </tr>
-                    <tr>
-                        <th>1</th>
-                        <td>Mark</td>
-                        <td>Otto</td>
-                    </tr>
                 </tbody>
             </table>
         </div>
@@ -304,13 +327,14 @@
             <div><<</div>
             <div><</div>
             <div>이전</div>
-            <div>1</div>
+            <div id="page-btn-numbers">
+                <div>1</div>
+            </div>
             <div>다음</div>
             <div>></div>
             <div>>></div>
         </div>
         <!--등록 버튼-->
-        @*<div><a href="/Board/CreateView">등록</a></div>*@
         <div class="div-samerow" onclick="clickCURD(this, 'c')">등록</div>
     </div>
 </div>

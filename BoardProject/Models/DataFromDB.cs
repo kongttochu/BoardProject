@@ -42,7 +42,7 @@ namespace BoardProject.Models
             {
                 count = (int)data["COUNT"];
             }
-            return string.Format("count : {0}", count);
+            return string.Format("{{count : {0}}}", count);
         }
 
         public Board GetOneBoard(int id)
