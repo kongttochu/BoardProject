@@ -3,5 +3,26 @@
     ViewBag.Title = "CreateView";
 }
 
+
+<script>
+    $(function () {
+        $(document).on('click', '#btn', function () {
+            if ($("#input").val() == '' || $("#textarea").val() == '') {
+                alert('모두 입력하세요.');
+            }
+            else {
+                $("#form1").submit();
+            }
+        });
+    });
+</script>
+
 <h2>CreateView</h2>
 
+<form id="form1" action="/Board/CreateProcess" enctype="multipart/form-data" method="post">
+    <!--입력창-->
+    @*<input id="board_" type="hidden" name="board_id" />*@
+    <p>제목: <input id="input" type="text" name="title" /></p>
+    <p>내용: <input id="textarea" type="text" name="contents" /></p>
+</form>
+<div id="btn">저장</div>

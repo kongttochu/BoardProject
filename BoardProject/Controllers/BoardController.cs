@@ -21,14 +21,46 @@ namespace BoardProject.Controllers
             return View();
         }
 
-        public ActionResult ReadView()
+        [HttpPost]
+        public ActionResult CreateProcess(string title, string contents)
         {
+            DataFromDB data = new DataFromDB();
+            data.InsertBoard(title, contents);
+            return RedirectToAction("BoardView");
+        }
+
+        public ActionResult ReadView(int board_id)
+        {
+            ViewBag.board_id = board_id;
             return View();
         }
 
-        public ActionResult EditView()
+        public JsonResult GetOneBoard(int id)
         {
+            DataFromDB data = new DataFromDB();
+            string jsonData = JsonConvert.SerializeObject(data.GetOneBoard(id));
+            return Json(jsonData);
+        }
+
+        public ActionResult EditView(int board_id)
+        {
+            ViewBag.board_id = board_id;
             return View();
+        }
+
+        [HttpPost]
+        public ActionResult UpdateProcess(int board_id, string title, string contents)
+        {
+            DataFromDB data = new DataFromDB();
+            data.UpdateBoard(board_id, title, contents);
+            return RedirectToAction("BoardView");
+        }
+
+        public ActionResult DeleteView(int board_id)
+        {
+            DataFromDB data = new DataFromDB();
+            data.DeleteBoard(board_id);
+            return RedirectToAction("BoardView");
         }
 
         public JsonResult GetList(int offset, int next)

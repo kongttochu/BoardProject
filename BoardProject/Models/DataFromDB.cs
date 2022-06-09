@@ -44,5 +44,42 @@ namespace BoardProject.Models
             }
             return string.Format("count : {0}", count);
         }
+
+        public Board GetOneBoard(int id)
+        {
+            dbconn dbconn = new dbconn();
+            string queryString = string.Format("EXEC USP_GETCONTENTS {0}", id);
+            var data = dbconn.ConnectDB(queryString);
+            Board board = new Board();
+            while (data.Read())
+            {
+                board.TITLE = data["TITLE"].ToString();
+                board.CONTENTS = data["CONTENTS"].ToString();
+            }
+            return board;
+        }
+
+        public void InsertBoard(string title, string contents)
+        {
+            dbconn dbconn = new dbconn();
+            string queryString = string.Format("EXEC USP_INSERTCONTENTS \'{0}\', \'{1}\'"
+                                                                        , title, contents);
+            var data = dbconn.ConnectDB(queryString);
+        }
+
+        public void UpdateBoard(int id, string title, string contents)
+        {
+            dbconn dbconn = new dbconn();
+            string queryString = string.Format("EXEC USP_UPDATECONTENTS {0}, \'{1}\', \'{2}\'"
+                                                                        , id, title, contents);
+            var data = dbconn.ConnectDB(queryString);
+        }
+
+        public void DeleteBoard(int id)
+        {
+            dbconn dbconn = new dbconn();
+            string queryString = string.Format("EXEC USP_UNUSECONTENTS {0}", id);
+            var data = dbconn.ConnectDB(queryString);
+        }
     }
 }

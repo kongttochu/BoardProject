@@ -44,7 +44,14 @@
                 1 등록 입력창 : 제목과 본문 내용 비어있는 입력창 표시
                 2 저장 버튼 누르면 등록 후 창 닫기, 취소 버튼 누르면 창 닫기
 *@
+
+
+
 <style>
+    /*전체*/
+    .div-samerow, #page-btn-group div {
+        display: inline-block;
+    }
     /*상단*/
     /*드롭다운*/
     .dropdown {
@@ -58,14 +65,44 @@
         z-index: 1; /*다른 요소들보다 앞에 배치*/
     }
 
-    .dropdown-content div {
+        .dropdown-content div {
             display: block;
-     }
+        }
 
     .dropdown:hover .dropdown-content {
         display: block;
     }
+    /*입력창*/
+    #textarea {
+        -moz-appearance: textfield-multiline;
+        -webkit-appearance: textarea;
+        border: 1px solid gray;
+        font: medium -moz-fixed;
+        font: -webkit-small-control;
+        height: 28px;
+        overflow: auto;
+        padding: 2px;
+        resize: both;
+        width: 400px;
+    }
+
+    #input {
+        -moz-appearance: textfield;
+        -webkit-appearance: textfield;
+        background-color: white;
+        background-color: -moz-field;
+        border: 1px solid darkgray;
+        box-shadow: 1px 1px 1px 0 lightgray inset;
+        font: -moz-field;
+        font: -webkit-small-control;
+        margin-top: 5px;
+        padding: 2px 3px;
+        width: 398px;
+    }
     /*중앙*/
+    #board {
+        width: 500px;
+    }
     /*하단*/
 </style>
 
@@ -75,54 +112,50 @@
         init();
     });
 
-    var init = function () {
-        //$("pre").on("click", function () {
-        //    o.toast.info("소스 코드를 클릭하셨군요!");
-        //});
-        //
-        //검색 버튼
-        //등록 버튼
+    //common
+    let setDivBtnLink = function (select, link) {
+        $(document).on('click', select, function () {
+            $(location).attr("href", link)
+        });
+    }
 
+    //load - 실패
+    let load = function () {
+        $('body').append('<script language="javascript" type="text/javascript" src="custom/js/common.js" />');
+    }
+
+    //init
+    var init = function () {
+        //$('head').append('<link rel="stylesheet" href="custom/css/fordiv.css" />');
+        //$('head').append('<script language="javascript" type="text/javascript" src="custom/js/common.js" />');
+        
+        setDivBtnLink("#create-btn", "/Board/CreateView")//등록버튼
         board.getlist(1);
     }
 
-
-    var title = "";
-    var total = 200;
-    var nowpage = 1;
-    var setpage = 10;
-    var pagesize = 10;
-
-    //클래스 object = JavaScript Object Nation
-    //list 
-    //View -> <div></div> 다른 페이지 이동
-    //CREATE -> 페이지 따로 생성
-    //DELETE -> ISUSE -> N
-    //EDIT 마지막
-
-
-    //다음 시간 과제
-    //페이징  
-    //  [ << ] 제일 처음
-    //  [ < ] 10개 전
-    //  [ 이전페이지 ] -1
-    //  [ 다음페이지 ] + 1
-    //  [ > ] 10개 이후
-    //  [ >> ] 제일 마지막
-
-    //검색
-
-
-    //다다음 시간 과제
-    //검색
-    //오더
-
-    function getlist() {
-
-    }
-
-    function setlist() {
-
+    let clickCURD = function ($this, curd) {
+        let url = '';
+        let board_id;
+        if (curd != 'c') board_id = $($this).attr('board_id');
+        switch (curd) {
+            case 'c':
+                url = '/Board/CreateView';
+                break;
+            case 'u':
+                url = '/Board/EditView?board_id=' + board_id;
+                break;
+            case 'r':
+                url = '/Board/ReadView?board_id=' + board_id;
+                break;
+            case 'd':
+                url = '/Board/DeleteView?board_id="' + board_id;
+                break;
+            default:
+                console.log('지정되지 않은 버튼입니다.');
+                return;
+        }
+         
+        setDivBtnLink($this, url);
     }
 
     var board = {
@@ -146,12 +179,6 @@
                 searchcolum: this.searchcolum
             }
 
-            //jquer function 호출 했을경우에 this는 바뀐다.
-            //var lll = [1, 2, 3, 4];
-            //$.each(lll, function (index, item) {
-            //    debugger;
-            //});
-
             var that = this;
 
             // ajax 통신
@@ -164,15 +191,14 @@
                     // 응답코드 > 0000
                     console.log("success");
                     var list = JSON.parse(res);
-                    console.log(res);
-                    console.log("bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb");
+                    console.log(list);
 
 
                     //this가 에러가 남
                     //this.setlist(res);
 
                     //1개만 실행시킬경우
-                    board.setlist(res);
+                    board.setlist(list);
                     //2개 이상실행시킬경우
                     //that.setlist(res);
                     //that.setpage(res);
@@ -182,22 +208,18 @@
                     alert("통신 실패.")
                 }
             });
-
-
-            console.log("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa");
         },
         setlist: function (obj) {
             $("#board tbody").html("");
             $.each(obj, function (idx, item) {
                 //string format 형식으로 바꾸기, 자주 사용하는 기능들 미리 만들어 두고 불러서 쓰기(common script  comm.js)
-                $("#board tbody").append('<tr onclick=""><td>_</td><td>' + item["TITLE"] + '</td><td>' + item["REGDATE"] + '</td><td>수정, 삭제</td></tr>');
+                $("#board tbody").append('<tr><td>_</td><td onclick="clickCURD(this, \'r\')" board_id ="' + item["IDX"] + '">' + item["TITLE"] + '</td><td>' + item["REGDATE"] + '</td></tr>');
             });
-
             //콤마제거
             //콤마추가
-            //숫자변환 -> 숫자인지 체크하는것도 포함 , 숫자인경우 숫자 parseint , 문자인경우 0 , null 0, NaN 0 
+            //숫자변환 -> 숫자인지 체크하는것도 포함 , 숫자인경우 숫자 parseint , 문자인경우 0 , null 0, NaN 0
             //
-           
+
 
             //function stringformat()
             //comm.stringformat
@@ -224,11 +246,11 @@
     <!--상단 콘텐츠-->
     <div>
         <!--게시물 갯수 표시-->
-        <div id="board_count">
+        <div id="board_count" class="div-samerow">
             총 <span>10</span>건의 게시물
         </div>
         <!--게시물 검색-->
-        <div>
+        <div  class="div-samerow">
             <!--드롭다운-->
             <div class="dropdown">
                 <span class="dropbtn">검색 기준</span>
@@ -238,7 +260,9 @@
                 </div>
             </div>
             <!--입력창-->
+            <div><input id="input" type="text" name="search" /></div>
             <!--버튼-->
+            <div>검색</div>
         </div>
     </div>
     <!--중앙 콘텐츠-->
@@ -246,12 +270,16 @@
         <!--게시물 테이블-->
         <div>
             <table id="board">
+                <colgroup>
+                    <col width="10%" />
+                    <col width="*" />
+                    <col width="20%" />
+                </colgroup>
                 <thead>
                     <tr>
                         <th>번호</th>
                         <th>제목</th>
                         <th>작성일</th>
-                        <th>.</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -259,12 +287,10 @@
                         <th>1</th>
                         <td>Mark</td>
                         <td>Otto</td>
-                        <td>Otto</td>
                     </tr>
                     <tr>
                         <th>1</th>
                         <td>Mark</td>
-                        <td>Otto</td>
                         <td>Otto</td>
                     </tr>
                 </tbody>
@@ -274,10 +300,17 @@
     <!--하단 콘텐츠-->
     <div>
         <!--페이지 버튼-->
-        <div>
-            <div></div>
+        <div id="page-btn-group" class="div-samerow">
+            <div><<</div>
+            <div><</div>
+            <div>이전</div>
+            <div>1</div>
+            <div>다음</div>
+            <div>></div>
+            <div>>></div>
         </div>
         <!--등록 버튼-->
-
+        @*<div><a href="/Board/CreateView">등록</a></div>*@
+        <div class="div-samerow" onclick="clickCURD(this, 'c')">등록</div>
     </div>
 </div>

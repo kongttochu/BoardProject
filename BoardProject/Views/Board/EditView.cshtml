@@ -1,6 +1,6 @@
 ﻿
 @{
-    ViewBag.Title = "ReadView";
+    ViewBag.Title = "EditView";
 }
 
 <script>
@@ -9,7 +9,7 @@
     //common
     let setDivBtnLink = function (select, link) {
         $(document).on('click', select, function () {
-            $(location).attr("href", link)
+            $(location).attr("href", link);
         });
     }
 
@@ -43,9 +43,16 @@
     }
 
     $(function () {
+        $(document).on('click', '#btn', function () {
+            if ($("#input").val() == '' || $("#textarea").val() == '') {
+                alert('모두 입력하세요.');
+            }
+            else {
+                $("#form1").submit();
+            }
+        });
         getReadData();
     });
-
 
 
     let getReadData = function () {
@@ -60,7 +67,6 @@
                 // 응답코드 > 0000
                 console.log("success");
                 var json = JSON.parse(res);
-                console.log(json);
                 setPage(json);
             },
             error: function (XMLHttpRequest, textStatus, errorThrown) { // 비동기 통신이 실패할경우 error 콜백으로 들어옵니다.
@@ -70,17 +76,20 @@
     }
 
     let setPage = function (json) {
-        $("#title").text(json.TITLE);
-        $("#contents").text(json.CONTENTS);
+        $('#board_id').val(read_id);
+        $("#input").val(json.TITLE);
+        $("#textarea").val(json.CONTENTS);
     }
 </script>
 
-<h2>ReadView</h2>
+<h2>EditView</h2>
 
-<div>제목: </div>
-<div id="title"></div>
-<div>본문: </div>
-<div id="contents"></div>
+<form id="form1" action="/Board/UpdateProcess" enctype="multipart/form-data" method="post">
+    <!--입력창-->
+    <input id="board_id" type="hidden" name="board_id" />
+    <p>제목: <input id="input" type="text" name="title" /></p>
+    <p>내용: <input id="textarea" type="text" name="contents" /></p>
+</form>
 <div onclick="clickList(this)">목록</div>
-<div onclick="clickCURD(this, 'u')">수정</div>
-<div onclick="clickCURD(this, 'd')">삭제</div>
+<div id="btn">수정</div>
+
