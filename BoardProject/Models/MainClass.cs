@@ -16,6 +16,7 @@ namespace BoardProject.Models
         public string TITLE { get; set; }
         public string CONTENTS { get; set; }
         public DateTime REGDATE { get; set; }
+        public string REGDATESTRING { get; set; }
         public string REGID { get; set; }
         public DateTime UPDDATE { get; set; }
         public string UPDID { get; set; }

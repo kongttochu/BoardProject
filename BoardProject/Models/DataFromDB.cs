@@ -24,10 +24,11 @@ namespace BoardProject.Models
                     TITLE = data["TITLE"].ToString(),
                     CONTENTS = data["CONTENTS"].ToString(),
                     REGDATE = DateTime.TryParse(data["REGDATE"].ToString(), out dt) ? dt : DateTime.Now,
+                    REGDATESTRING = dt.ToString("G"),
                     REGID = data["REGID"].ToString(),
                     UPDDATE = DateTime.TryParse(data["UPDDATE"].ToString(), out dt) ? dt : DateTime.Now,
                     UPDID = data["UPDID"].ToString()
-                });
+                }); ;
             }
             return list;
         }
@@ -62,7 +63,7 @@ namespace BoardProject.Models
         public void InsertBoard(string title, string contents)
         {
             dbconn dbconn = new dbconn();
-            string queryString = string.Format("EXEC USP_INSERTCONTENTS '{0}', '{1}'"
+            string queryString = string.Format("EXEC USP_INSERTCONTENTS \'{0}\', \'{1}\'"
                                                                         , title, contents);
             var data = dbconn.ConnectDB(queryString);
         }
@@ -70,7 +71,7 @@ namespace BoardProject.Models
         public void UpdateBoard(int id, string title, string contents)
         {
             dbconn dbconn = new dbconn();
-            string queryString = string.Format("EXEC USP_UPDATECONTENTS {0}, '{1}', '{2}'"
+            string queryString = string.Format("EXEC USP_UPDATECONTENTS {0}, \'{1}\', \'{2}\'"
                                                                         , id, title, contents);
             var data = dbconn.ConnectDB(queryString);
         }

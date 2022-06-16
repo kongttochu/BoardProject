@@ -27,10 +27,6 @@ namespace BoardProject.Controllers
         {
             DataFromDB data = new DataFromDB();
             data.InsertBoard(title, contents);
-            for (int i = 0; i < 120; i++)
-            {
-                data.InsertBoard(string.Format("제목 {0}", i), string.Format("내용 {0}", i));
-            }
             return RedirectToAction("BoardView");
         }
 
@@ -68,17 +64,17 @@ namespace BoardProject.Controllers
             return RedirectToAction("BoardView");
         }
 
-        public JsonResult GetList(int offset, int next)
+        public JsonResult GetList(int setPage, int pageSize, string colum, string param, string order, string isDesc)
         {
             DataFromDB data = new DataFromDB();
-            string jsonData = JsonConvert.SerializeObject(data.GetList("","", offset, next));
+            string jsonData = JsonConvert.SerializeObject(data.GetList(setPage, pageSize, colum, param, order, isDesc));
             return Json(jsonData);
         }
 
-        public JsonResult GetCount()
+        public JsonResult GetCount(string colum, string param)
         {
             DataFromDB data = new DataFromDB();
-            string jsonData = JsonConvert.SerializeObject(data.GetCount());
+            string jsonData = JsonConvert.SerializeObject(data.GetCount(colum, param));
             return Json(jsonData);
         }
     }
