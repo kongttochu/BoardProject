@@ -13,6 +13,7 @@ namespace BoardProject.Controllers
         // GET: Board
         public ActionResult BoardView()
         {
+        //    ViewBag.CreView = "/Board/CreateView";
             return View();
         }
 

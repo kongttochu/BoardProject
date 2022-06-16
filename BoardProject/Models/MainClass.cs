@@ -19,5 +19,6 @@ namespace BoardProject.Models
         public string REGID { get; set; }
         public DateTime UPDDATE { get; set; }
         public string UPDID { get; set; }
+        public int count { get; set; }
     }
 }

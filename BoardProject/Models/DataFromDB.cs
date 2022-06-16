@@ -32,17 +32,17 @@ namespace BoardProject.Models
             return list;
         }
 
-        public string GetCount()
+        public Board GetCount()
         {
             dbconn dbconn = new dbconn();
             string queryString = string.Format("EXEC USP_GETCOUNT");
             var data = dbconn.ConnectDB(queryString);
-            int count = -1;
+            Board board = new Board();
             while (data.Read())
             {
-                count = (int)data["COUNT"];
+                board.count = (int)data["COUNT"];
             }
-            return string.Format("{{count : {0}}}", count);
+            return board;
         }
 
         public Board GetOneBoard(int id)
