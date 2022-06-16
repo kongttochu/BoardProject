@@ -120,16 +120,8 @@
         });
     }
 
-    //load - 실패
-    let load = function () {
-        $('body').append('<script language="javascript" type="text/javascript" src="custom/js/common.js" />');
-    }
-
     //init
     var init = function () {
-        //$('head').append('<link rel="stylesheet" href="custom/css/fordiv.css" />');
-        //$('head').append('<script language="javascript" type="text/javascript" src="custom/js/common.js" />');
-
         setDivBtnLink("#create-btn", "/Board/CreateView")//등록버튼
         board.init();
     }
@@ -165,8 +157,7 @@
         total: 200,
         nowpage: 1,
         setpage: 10,//이동할 페이지 넘버
-        pagesize: 10,// 총 페이지 수
-        pagelistsize: 10,// 한 페이지에 표시될 행의 수
+        pagesize: 10,// 한 페이지에 표시할 글의 수
         quickpagesize: 5,// 빠른 이동페이지 수, 한번에 표시될 페이지 버튼 수
         searchvalue: "",
         searchcolum: "",

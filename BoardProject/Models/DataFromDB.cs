@@ -7,12 +7,12 @@ namespace BoardProject.Models
 {
     public class DataFromDB
     {
-        public List<Board> GetList(string colum, string param, int offset, int next)
+        public List<Board> GetList(int setPage = 1, int pageSize = 10, string colum = "", string param = "", string order = "IDX", string isDesc = "y")
         {
             List<Board> list = new List<Board>();
             dbconn dbconn = new dbconn();
-            string queryString = string.Format("EXEC USP_GETSEARCH '{0}', '{1}', {2}, {3}"
-                , colum, param, offset, next);
+            string queryString = string.Format("EXEC USP_GETSEARCH {0}, {1}, '{2}', '{3}', '{4}', '{5}'"
+                , setPage, pageSize, colum, param, order, isDesc);
             var data = dbconn.ConnectDB(queryString);
 
             DateTime dt = DateTime.Now;
@@ -32,10 +32,10 @@ namespace BoardProject.Models
             return list;
         }
 
-        public Board GetCount()
+        public Board GetCount(string colum = "", string param = "")
         {
             dbconn dbconn = new dbconn();
-            string queryString = string.Format("EXEC USP_GETCOUNT");
+            string queryString = string.Format("EXEC USP_GETCOUNT '{0}', '{1}'", colum, param);
             var data = dbconn.ConnectDB(queryString);
             Board board = new Board();
             while (data.Read())
@@ -62,7 +62,7 @@ namespace BoardProject.Models
         public void InsertBoard(string title, string contents)
         {
             dbconn dbconn = new dbconn();
-            string queryString = string.Format("EXEC USP_INSERTCONTENTS \'{0}\', \'{1}\'"
+            string queryString = string.Format("EXEC USP_INSERTCONTENTS '{0}', '{1}'"
                                                                         , title, contents);
             var data = dbconn.ConnectDB(queryString);
         }
@@ -70,7 +70,7 @@ namespace BoardProject.Models
         public void UpdateBoard(int id, string title, string contents)
         {
             dbconn dbconn = new dbconn();
-            string queryString = string.Format("EXEC USP_UPDATECONTENTS {0}, \'{1}\', \'{2}\'"
+            string queryString = string.Format("EXEC USP_UPDATECONTENTS {0}, '{1}', '{2}'"
                                                                         , id, title, contents);
             var data = dbconn.ConnectDB(queryString);
         }
