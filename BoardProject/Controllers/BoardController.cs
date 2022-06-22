@@ -35,7 +35,6 @@ namespace BoardProject.Controllers
             ViewBag.board_id = board_id;
             return View();
         }
-
         public JsonResult GetOneBoard(int id)
         {
             DataFromDB data = new DataFromDB();
@@ -66,6 +65,7 @@ namespace BoardProject.Controllers
 
         public JsonResult GetList(int setPage, int pageSize, string colum, string param, string order, string isDesc)
         {
+            Board abc = new Board();
             DataFromDB data = new DataFromDB();
             string jsonData = JsonConvert.SerializeObject(data.GetList(setPage, pageSize, colum, param, order, isDesc));
             return Json(jsonData);

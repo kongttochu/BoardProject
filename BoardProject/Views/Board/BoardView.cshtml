@@ -137,6 +137,7 @@
         $("#quickprev-btn").on('click', function () {
             let page = board.nowpage - board.quickpagesize;
             if (page < 1) page = 1;
+            board.prevpage();
             board.setnumberpage(page);
         });
         $("#prev-btn").on('click', function () {
@@ -147,6 +148,7 @@
         $("#next-btn").on('click', function () {
             let page = board.nowpage + 1;
             if (page > board.totalpage) page = board.totalpage;
+            board.nextpage();
             board.setnumberpage(page);
         });
         $("#quicknext-btn").on('click', function () {
@@ -157,6 +159,10 @@
         $("#last-btn").on('click', function () {
             board.setnumberpage(board.totalpage);
         });
+
+        var setnumpage = function (page) {
+            board.setnumberpage(page);
+        }
 
         ////정렬 버튼 이벤트 추가
         //$("#th-title").on('click', function () {
@@ -195,12 +201,23 @@
         //setDivBtnLink($this, url);
     }
 
+    //금,토 일요일 -> 아무것도, 너무 미비해, 일요일 저녁에 우리 월요일에 수업하시죠.
+    //모바일 페이지 
+    //1. 페이징을 없애
+    //2-1 더보기버튼 추가
+    //2-2 스크롤 맨아래까지 왔을때 자동으로 하단에 pagesize 추가
+    //3. 파일 업로드
+    //4. 프론트 디자인 마무리 
+    //5. 수정 View 달라야해
+    //6. 댓글 ☆
+    //7. 좋아요 ☆
+
     var board = {
         title: "제목",
         total: 200,
         nowpage: 1,
         setpage: 1,//이동할 페이지 넘버
-        pagesize: 10,// 한 페이지에 표시할 글의 수
+        pagesize: 5,// 한 페이지에 표시할 글의 수
         totalpage: 1,// 전체 페이지 수
         quickpagesize: 5,// 빠른 이동페이지 수, 한번에 표시될 페이지 버튼 수
         searchvalue: "",
@@ -213,6 +230,8 @@
         },
         setPageView: function () {
             this.getCount();
+            this.getlist();
+            var lastpage = this.nextpage();
         },
         getCount: function () {
 
@@ -242,7 +261,7 @@
         setCount: function (json) {
             this.total = json.count;
             this.totalpage = Math.ceil(this.total / this.pagesize);
-            this.getlist(this.setpage);
+            //this.getlist(this.setpage);
             $("#board_count span").text(this.total);
         },
         getlist: function (page) {
@@ -319,7 +338,7 @@
         nextpage: function (movepage) {
             if (this.nowpage + movepage <= this.totalpage) this.setpage = this.nowpage + movepage;
             else this.setpage = this.totalpage;
-            this.setPageView();
+            return this.setpage;
         },
         setnumberpage: function (pagenumber) {
             if (pagenumber == this.nowpage) this.refreshpage();
@@ -408,7 +427,7 @@
                 </colgroup>
                 <thead>
                     <tr>
-                        <th onclick="clickOrder(this)" orderName="IDX" isdesc ="y"번호</th>
+                        <th onclick="clickOrder(this)" orderName="IDX" isdesc ="y">번호</th>
                         <th onclick="clickOrder(this)" orderName="TITLE" isdesc ="n">제목</th>
                         <th onclick="clickOrder(this)" orderName="IDX" isdesc ="y">작성일</th>
                     </tr>

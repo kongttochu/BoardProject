@@ -24,7 +24,6 @@ namespace BoardProject.Models
                 //실행시킬 쿼리 입력
                 sqlComm.CommandText = pSQLQuery;
                 sqlComm.Connection = conn;
-
             }
             catch (Exception ex)
             {

@@ -7,6 +7,24 @@ namespace BoardProject.Models
 {
     public class DataFromDB
     {
+        //2번 파일 추가필요
+        public Board GetList22()
+        {
+        //    Board b = new Board();
+        //
+        //    boardlist bl = GetList()
+
+            List<Board> bl = new List<Board>();
+            bl.ForEach(p =>
+            {
+                p.CONTENTS = p.CONTENTS.Length == 16 ? p.CONTENTS.Substring(1, 16) + "..." : p.CONTENTS.ToString();
+                p.REGDATESTRING = p.REGDATE.ToString("yyyy-MM-dd");
+            });
+
+            return new Board();
+        //    b.totalcount = GetCount();
+        }
+
         public List<Board> GetList(int setPage = 1, int pageSize = 10, string colum = "", string param = "", string order = "IDX", string isDesc = "y")
         {
             List<Board> list = new List<Board>();
